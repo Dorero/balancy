@@ -6,3 +6,17 @@ services:
       - .:/go/src
     working_dir: /go/src
     command: go run src/main.go
+
+  db:
+    image: postgres:15.0
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: balancy
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
