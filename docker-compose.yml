@@ -5,12 +5,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:3000"
     volumes:
       - ./data:/app/data
     depends_on:
       - db
-    entrypoint: make insert_tables
     networks:
       - default
 

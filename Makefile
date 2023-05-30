@@ -2,7 +2,7 @@ include .env
 
 BINARY_NAME=balancy
 
-default: run
+default: build
 
 build:
 	GOARCH=amd64 GOOS=linux go build -o ./target/$(BINARY_NAME) src/main.go
@@ -14,6 +14,6 @@ clean:
 	go clean
 	rm ./target/${BINARY_NAME}
 
-run: build
+run:
 	./target/${BINARY_NAME}
 

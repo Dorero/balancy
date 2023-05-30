@@ -1,25 +1,26 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
+	"balancy/controllers"
+	"balancy/database"
 	_ "github.com/lib/pq"
 	"log"
+	"net/http"
 )
 
 func main() {
-	connStr := "user=postgres password=postgres dbname=balancy sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db := database.DatabaseInit()
+	ac := controllers.BalanceController{Db: db}
+	res := controllers.ReservesController{Db: db}
+
+	http.HandleFunc("/payments", ac.Create)
+	http.HandleFunc("/balance", ac.Show)
+	http.HandleFunc("/reserve", res.Create)
+	http.HandleFunc("/unreserve", res.Create)
+
+	err := http.ListenAndServe(":3000", nil)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("DB connect correct done")
-
-	result, err := db.Exec("SELECT * FROM accounts")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(result)
-
 }
