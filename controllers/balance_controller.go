@@ -1,28 +1,32 @@
 package controllers
 
 import (
-	"balancy/repositories"
-	"database/sql"
-	"fmt"
+	"balancy/services"
+	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 type BalanceController struct {
-	Db *sql.DB
 }
 
 func (c BalanceController) Show(w http.ResponseWriter, r *http.Request) {
-	userId, err := strconv.Atoi(r.URL.Query().Get("user_id"))
-
-	if err != nil {
-		// Обработка ошибки, если преобразование не удалось
-		fmt.Println("Ошибка преобразования строки в число:", err)
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	repositories.BalanceRepository{}.Show(userId)
+	userId, err := strconv.Atoi(r.URL.Query().Get("user_id"))
+
+	if err != nil {
+		log.Println("Ошибка преобразования строки в число:", err)
+		return
+	}
+
+	balance := services.BalanceService{}.Show(userId)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(balance)
 }

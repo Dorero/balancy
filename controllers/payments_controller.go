@@ -9,19 +9,17 @@ import (
 	"strconv"
 )
 
-type ReservesController struct {
+type PaymentsController struct {
 	Db *sql.DB
 }
 
-func (c ReservesController) Create(w http.ResponseWriter, r *http.Request) {
+func (c PaymentsController) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	userId, errId := strconv.Atoi(r.URL.Query().Get("user_id"))
-	orderId, errId := strconv.Atoi(r.URL.Query().Get("order_id"))
-	serviceId, errId := strconv.Atoi(r.URL.Query().Get("service_id"))
 	amount, errAmount := strconv.Atoi(r.URL.Query().Get("amount"))
 
 	if errId != nil {
@@ -34,10 +32,9 @@ func (c ReservesController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payment := services.ReserveService{}.Create(userId, orderId, serviceId, amount)
+	payment := services.PaymentService{}.Create(userId, amount)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(201)
 	json.NewEncoder(w).Encode(payment)
-
 }
