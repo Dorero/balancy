@@ -10,11 +10,12 @@ func main() {
 	p := controllers.PaymentsController{}
 	b := controllers.BalanceController{}
 	res := controllers.ReservesController{}
+	unres := controllers.UnReservesController{}
 
 	http.HandleFunc("/payments", p.Create)
 	http.HandleFunc("/balance", b.Show)
-	http.HandleFunc("/reserve/{id}/", res.Create)
-	http.HandleFunc("/unreserve", res.Create)
+	http.HandleFunc("/reserve", res.Create)
+	http.HandleFunc("/unreserve", unres.Create)
 
 	err := http.ListenAndServe(":3000", nil)
 

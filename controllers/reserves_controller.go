@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"balancy/services"
+	"balancy/utils"
 	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
-	"strconv"
 )
 
 type ReservesController struct {
@@ -19,25 +18,12 @@ func (c ReservesController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, errId := strconv.Atoi(r.URL.Query().Get("user_id"))
-	orderId, errId := strconv.Atoi(r.URL.Query().Get("order_id"))
-	serviceId, errId := strconv.Atoi(r.URL.Query().Get("service_id"))
-	amount, errAmount := strconv.Atoi(r.URL.Query().Get("amount"))
+	payload := utils.Validator{}.IsNumbers(r.URL.Query())
 
-	if errId != nil {
-		log.Println("Ошибка преобразования строки в число:", errId)
-		return
-	}
-
-	if errId != nil {
-		log.Println("Ошибка преобразования строки в число:", errAmount)
-		return
-	}
-
-	payment := services.ReserveService{}.Create(userId, orderId, serviceId, amount)
+	reserve := services.ReserveService{}.Create(payload["user_id"], payload["order_id"], payload["service_id"], payload["amount"])
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(201)
-	json.NewEncoder(w).Encode(payment)
+	json.NewEncoder(w).Encode(reserve)
 
 }

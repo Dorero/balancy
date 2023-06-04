@@ -2,7 +2,8 @@ package dto
 
 type Unreserve struct {
 	Id        int   `json:"id"`
-	Amount    int64 `json:"amount"`
+	UserId    int   `json:"user_id"`
 	OrderId   int   `json:"order_id"`
 	ServiceId int   `json:"service_id"`
+	Amount    int64 `json:"amount"`
 }
